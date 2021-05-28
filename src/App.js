@@ -7,6 +7,7 @@ import {
     Link
 } from "react-router-dom";
 import mergeImages from 'merge-images'
+import TokenView from "./TokenView";
 
 function App() {
     return (
@@ -17,10 +18,16 @@ function App() {
                         <li>
                             <Link to="/">Home</Link>
                         </li>
+                        <li>
+                            <Link to="/token">Token</Link>
+                        </li>
                     </ul>
                 </nav>
 
                 <Switch>
+                    <Route path="/token">
+                        <TokenView />
+                    </Route>
                     <Route path="/">
                         <Home />
                     </Route>

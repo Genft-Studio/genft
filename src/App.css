@@ -2,7 +2,8 @@
   text-align: center;
 }
 
-.App-logo {
+.App-logo,
+.gen-img {
   height: 40vmin;
   pointer-events: none;
 }
