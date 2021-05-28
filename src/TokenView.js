@@ -2,10 +2,14 @@ import _ from "lodash"
 import mergeImages from 'merge-images'
 import {useState, useEffect} from "react"
 import {genftParser} from "./genft-parser";
+import body from './assets/body.png'
+import eyes from './assets/eyes.png'
+import mouth from './assets/mouth.png'
 
 function TokenView() {
     const [dna, setDna] = useState("")
     const [imageData, setImageData] = useState(null)
+    const [genome, setGenome] = useState(null)
 
     const getRandomInt = (max) => {
         return Math.floor(Math.random() * Math.floor(max));
@@ -28,8 +32,8 @@ function TokenView() {
     useEffect(() => {
         const asyncDnaChanged = async (dna) => {
             try {
-                // const genft = genftParser(dna, genome)
-                const genft = await genftParser(dna)
+                const genft = await genftParser(dna, genome)
+                // const genft = await genftParser(dna)
                 console.log("parsed genft data: ", genft)
 
                 document.querySelector('.gen-img').src = genft.imageData
@@ -44,10 +48,19 @@ function TokenView() {
     }, [dna])
 
     useEffect(() => {
-        mergeImages(['/assets/body.png', '/assets/eyes.png', '/assets/mouth.png'])
-            .then(b64 => document.querySelector('.gen-img').src = b64)
+        setGenome({
+            layers: [
+                [body],
+                [eyes],
+                [mouth]
+            ]
+        })
+
+        // mergeImages(['/assets/body.png', '/assets/eyes.png', '/assets/mouth.png'])
+        //     .then(b64 => document.querySelector('.gen-img').src = b64)
 
         randomDna()
+
     }, [])
 
     return (
