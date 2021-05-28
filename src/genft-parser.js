@@ -1,9 +1,11 @@
 import mergeImages from 'merge-images'
 
-function hexToBytes(hex){
+function hexToBytes(hex, bytesPerSlice = 2){
+    // bytesPerSlice of 1 means each Hex character will become a number 0-15
+    // bytesPerSlice of 2 means each pair of Hex character will become a number 0-255
     var result = []
-    for(var i = 0; i < hex.length; i+=2){
-        result.push(parseInt(hex.slice(i, i+2),16));
+    for(var i = 0; i < hex.length; i+=bytesPerSlice){
+        result.push(parseInt(hex.slice(i, i+bytesPerSlice),16));
     }
     return result;
 }
@@ -37,17 +39,14 @@ export async function genftParser(dna) {
 
     // TODO: use genes data to determine image src selection and position
 
+    // Pseudo-rotate - generate number between -32 and 32
     const rotate = (genes[0] % 64) - 32
 
     const b64 = await mergeImages([
         { src: '/assets/body.png', x: 0, y: 0 },
-        // { src: '/assets/eyes.png', x: 32, y: 0 },
         { src: '/assets/eyes.png', x: rotate, y: 0 },
-        // { src: '/assets/mouth.png', x: 16, y: 0 }
         { src: '/assets/mouth.png', x: (rotate/2), y: 0 }
     ])
-    // ]).then(b64 => document.querySelector('.gen-img').src = b64)
-
     genft.imageData = b64
 
     return genft
