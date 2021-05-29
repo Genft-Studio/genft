@@ -7,10 +7,10 @@ import "./Genft.sol";
 
 contract GenftFactory is Ownable {
     Genft[] public instances;
-    event InstanceCreated(address indexed _from, address indexed _child);
+    event InstanceCreated(address indexed _from, address indexed _instance);
     address walletAddress;
 
-    function initialize(
+    function get(
         string memory _tokenName,
         string memory _tokenSymbol,
         uint8 _minimumDifficultyBits,
@@ -21,6 +21,8 @@ contract GenftFactory is Ownable {
         string memory _uiConfigUri,
         uint256 _commissionPercentage
     ) external {
+        // TODO make and pass a payment splitter (https://docs.openzeppelin.com/contracts/2.x/api/payment)
+
         Genft instance = new Genft(
             _tokenName,
             _tokenSymbol,

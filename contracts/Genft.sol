@@ -24,7 +24,7 @@ contract Genft is ERC721URIStorage, ERC721Pausable, ERC721Burnable, AccessContro
     uint256 public commissionPercentage;
     string public baseTokenURI;
     address public walletAddress;
-    address public artist;
+    address public artistAddress;
 
     mapping(uint256 => uint256) byDna; // dna must be unique
 
@@ -53,7 +53,7 @@ contract Genft is ERC721URIStorage, ERC721Pausable, ERC721Burnable, AccessContro
 
         //set up roles
         _setupRole(PAUSER_ROLE, _msgSender());
-        artist = _msgSender();
+        artistAddress = _msgSender();
 
         _setupRole(DEFAULT_ADMIN_ROLE, _adminAddress);
         walletAddress = _adminAddress;
@@ -82,8 +82,13 @@ contract Genft is ERC721URIStorage, ERC721Pausable, ERC721Burnable, AccessContro
         bytes32 work = keccak256(abi.encodePacked(msg.sender, symbol(), seed_));
         require(uint256(work) <= difficulty1Target, 'not enough work');
 
+        // TODO distribute the funds via a payment splitter
         // pay the factory
-        payable(walletAddress).transfer(price);
+        uint256 commission = price * commissionPercentage / 100;
+        payable(walletAddress).transfer(commission);
+
+        // pay the artist
+        payable(artistAddress).transfer(price - commission);
 
         // return change
         payable(msg.sender).transfer(msg.value - price);
