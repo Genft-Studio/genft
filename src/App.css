@@ -72,3 +72,28 @@ nav li a {
 nav li a:hover {
   background-color: #111;
 }
+
+
+label.file-upload input[type=file] {
+  display: none;
+}
+
+label.file-upload {
+  padding: 6px 20px;
+  margin: 10px;
+  font-size: 1.1em;
+  font-family: screen1;
+  border: none;
+  color: #ffffff;
+  background-color: #777777;
+  box-shadow: 8px 8px 0px 0px #444444;
+  cursor: pointer;
+  outline: none;
+}
+
+label.file-upload:hover{
+  position: relative;
+  top: 3px;
+  left: 3px;
+  box-shadow: 5px 5px 0px 0px #444444;
+}
