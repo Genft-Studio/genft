@@ -3,6 +3,7 @@ import and from 'bitwise-buffer/src/and.js'
 import lshift from 'bitwise-buffer/src/leftShift.js'
 import rshift from 'bitwise-buffer/src/rightShift.js'
 import { exposeWorker } from 'react-hooks-worker';
+import {Buffer} from "buffer";
 
 function randomBuffer(){
     var x = new Uint8Array(32);
@@ -49,8 +50,15 @@ const mine = ([salt, difficultyBits, dnaBits, address]) => {
     var rawTime = (Date.now() - startTime)/1000
     var time = Math.floor(rawTime);
     var khs = Math.round(count/rawTime/1000);
-    var dna = and.pure(hash, dnaMask).slice(-Math.ceil(dnaBits / 8))
-    return {seed: guess, dna, time, hash, hashes: count, khs};
+    var dna = Buffer.from(and.pure(hash, dnaMask).slice(-Math.ceil(dnaBits / 8)))
+    return {
+        seed: guess.toString('hex'),
+        dna: dna.toString('hex'),
+        time,
+        hash: hash.toString('hex'),
+        hashes: count,
+        khs
+    }
 }
 
 exposeWorker(mine)

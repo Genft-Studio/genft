@@ -11,13 +11,16 @@ export default ({tokenId, difficulty, genomeLength, onSuccess}) => {
     const {collectionId} = useParams()
     const {result, error} = useWorker(createMiner, [tokenId, difficulty, genomeLength, testAddress])
 
-    useEffect(() => onSuccess(result), [result] )
+    useEffect(() => onSuccess(result), [result])
 
     return (
-        <div>
-            {error && <>Mining accident occured: {error}</>}
-            {!error && <>Result: {JSON.stringify(result)}</>}
-        </div>
+        <>
+            {error &&
+            <div className='error'>
+                Mining accident occured: {error}
+            </div>
+            }
+        </>
     )
 
 }

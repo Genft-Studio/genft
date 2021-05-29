@@ -97,3 +97,16 @@ label.file-upload:hover{
   left: 3px;
   box-shadow: 5px 5px 0px 0px #444444;
 }
+
+.token {
+  padding: 10px;
+}
+
+.token img {
+  width: 50px;
+}
+
+.availableTokens {
+  display: flex;
+  flex-wrap: wrap;
+}
