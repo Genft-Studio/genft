@@ -9,14 +9,13 @@ export default ({tokenId, difficulty, genomeLength, address, onSuccess}) => {
     useEffect(() => onSuccess(result), [result])
 
     return (
-        <div className='minerStatus'>
-            Mining...
+        <>
             {error &&
             <div className='error'>
                 Mining accident occured: {error}
             </div>
             }
-        </div>
+        </>
     )
 
 }

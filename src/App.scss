@@ -1,3 +1,5 @@
+@import "~bootstrap";
+
 .App {
   text-align: center;
 }
@@ -98,21 +100,7 @@ label.file-upload:hover{
   box-shadow: 5px 5px 0px 0px #444444;
 }
 
-.token {
-  padding: 10px;
-}
-
-.token img {
-  width: 50px;
-}
-
-.availableTokens {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.minerStatus {
-  width: 100%;
-  height: 30px;
-  font-size: 20px;
+#background {
+  position: fixed;
+  z-index: -99999;
 }
