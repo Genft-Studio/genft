@@ -2,6 +2,7 @@ import React, {useState} from "react"
 import TokenMiner from "./TokenMiner";
 import {Button} from "react-bootstrap";
 import {genftParser} from "./genft-parser";
+import {useParams} from "react-router-dom";
 
 import body from "./assets/body.png";
 import body2 from "./assets/body-02.png";
@@ -18,11 +19,14 @@ const TEST_SETTINGS = {
         [mouth, mouth2]
     ],
     tokenId: '$OWL',
-    difficulty: 16,
+    difficulty: 20,
     genomeLength: 6 * 8
 }
 
+const TEST_ADDRESS = '0x534Eb19E729E955308e5A9c37c90d4128e0F450F'
+
 const MineToken = () => {
+    const { collectionId } = useParams()
     const [isMining, setIsMining] = useState(false)
     const [foundTokens, setFoundTokens] = useState([])
     const handleFoundToken = async token => {
@@ -39,6 +43,7 @@ const MineToken = () => {
                     tokenId={TEST_SETTINGS.tokenId}
                     difficulty={TEST_SETTINGS.difficulty}
                     genomeLength={TEST_SETTINGS.genomeLength}
+                    address={TEST_ADDRESS}
                     onSuccess={handleFoundToken}
                 />
                 <Button onClick={() => setIsMining(false)}>Stop mining</Button>
