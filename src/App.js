@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.scss';
 import {
     HashRouter as Router,
@@ -7,7 +6,7 @@ import {
     Link
 } from "react-router-dom";
 import mergeImages from 'merge-images'
-import TokenView from "./TokenView";
+import TokenPage from "./TokenPage";
 import FactoryFactory from "./FactoryFactory";
 import MineToken from "./MineToken";
 
@@ -34,7 +33,7 @@ function App() {
                         <FactoryFactory />
                     </Route>
                     <Route path="/token" exact>
-                        <TokenView />
+                        <TokenPage />
                     </Route>
                     <Route path="/:collectionId" exact>
                         <MineToken />
