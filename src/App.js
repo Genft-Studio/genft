@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import mergeImages from 'merge-images'
 import TokenView from "./TokenView";
+import FactoryFactory from "./FactoryFactory";
 
 function App() {
     return (
@@ -19,12 +20,18 @@ function App() {
                             <Link to="/">Home</Link>
                         </li>
                         <li>
+                            <Link to="/factory-factory">Factory Factory</Link>
+                        </li>
+                        <li>
                             <Link to="/token">Token</Link>
                         </li>
                     </ul>
                 </nav>
 
                 <Switch>
+                    <Route path="/factory-factory">
+                        <FactoryFactory />
+                    </Route>
                     <Route path="/token">
                         <TokenView />
                     </Route>

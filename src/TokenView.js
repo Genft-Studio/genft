@@ -6,6 +6,7 @@ import body from './assets/body.png'
 import eyes from './assets/eyes.png'
 import mouth from './assets/mouth.png'
 import body2 from './assets/body-02.png'
+import body3 from './assets/body-03.png'
 import eyes2 from './assets/eyes-02.png'
 import mouth2 from './assets/mouth-02.png'
 
@@ -53,7 +54,7 @@ function TokenView() {
     useEffect(() => {
         setGenome({
             layers: [
-                [body, body2],
+                [body, body2, body3],
                 [eyes, eyes2],
                 [mouth, mouth2]
             ]
