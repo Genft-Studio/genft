@@ -1,6 +1,7 @@
 import _ from "lodash"
 import {useEffect, useState} from "react";
 import {NFTStorage} from "nft.storage";
+import TokenView from "./TokenView";
 
 function FactoryFactory() {
     const nftStorageKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnaXRodWJ8MTU5NzUxIiwiaXNzIjoibmZ0LXN0b3JhZ2UiLCJpYXQiOjE2MTYxODI3MTI2ODUsIm5hbWUiOiJTSVgtQklUIn0.zqSNtZNehlfluFHVtRipupGOnoq_09Lg2w6dIe9ec2Q"
@@ -84,6 +85,8 @@ function FactoryFactory() {
                 fileData[layerIndex].push(await toBase64(localFiles[layerIndex][fileIndex]))
             }
         }
+
+        // TODO: Include NFT collection configuration data - anything that doesn't need to be saved on-chain
         let data = {
             // filenames: [filesToFileNames(localFiles[0]), filesToFileNames(localFiles[1]), filesToFileNames(localFiles[2])],
             layers: fileData
@@ -93,7 +96,6 @@ function FactoryFactory() {
         try {
             const content = new Blob([JSON.stringify(data)])
             cid = await nftStorageClient.storeBlob(content)
-
             setCidRoot(cid)
             console.log("cid: ", cid)
             console.log("Asset data stored at: " + ipfsGatewayUrl(cid))
@@ -129,17 +131,14 @@ function FactoryFactory() {
                         <h3>Layer 0</h3>
                         <label className="file-upload">
                             <input type="file" multiple onChange={e => handleFileUpload(e, 0)} />
-                            {/*^ Upload*/}
                         </label>
                         <h3>Layer 1</h3>
                         <label className="file-upload">
                             <input type="file" multiple onChange={e => handleFileUpload(e, 1)} />
-                            {/*^ Upload*/}
                         </label>
                         <h3>Layer 2</h3>
                         <label className="file-upload">
                             <input type="file" multiple onChange={e => handleFileUpload(e, 2)} />
-                            {/*^ Upload*/}
                         </label>
                         <br />
 
@@ -163,7 +162,7 @@ function FactoryFactory() {
                                             <h3>Layer {layerIndex}</h3>
                                             {layer.map(imageData => {
                                                 return (
-                                                    <img src={imageData} className="preview" />
+                                                    <img src={imageData} />
                                                 )
                                             })}
                                         </>
@@ -172,17 +171,16 @@ function FactoryFactory() {
                             </div>
                         )}
 
-                        <br />
+                        <TokenView genome={ipfsResults} />
 
+                        <br />
                         <button disabled>
                             <h2>Deploy NFT Minter</h2>
                         </button>
                     </>
                 )}
 
-
             </header>
-
         </div>
     )
 }
