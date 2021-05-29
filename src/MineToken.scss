@@ -1,0 +1,38 @@
+#miningInProgressBackground {
+  position: absolute;
+  z-index: -9999;
+}
+
+.MineTokenPage {
+  width: 100%;
+  height: 100%;
+
+  .inner {
+    padding: 50px;
+    text-align: center;
+  }
+
+  .availableTokens {
+    padding: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    .token {
+      margin: 5px;
+      padding: 10px;
+      background-color: white;
+      border-radius: 6px;
+      border: thin #333333 solid;
+
+      img {
+        width: 50px;
+      }
+    }
+  }
+
+  Button {
+    font-size: 20px;
+    font-weight: bold;
+    margin: auto;
+  }
+}

@@ -1,3 +1,5 @@
+@import "~bootstrap";
+
 .App {
   text-align: center;
 }
@@ -109,4 +111,8 @@ label.file-upload:hover{
 .factory-preview .layers img {
   max-width: 50px;
   border: 1px solid #666;
+}
+#background {
+  position: fixed;
+  z-index: -99999;
 }
