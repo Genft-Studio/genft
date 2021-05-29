@@ -18,7 +18,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "truffle compile && react-scripts build",
+    "build:contract": "truffle compile",
+    "build:ui": "react-scripts build",
+    "deploy": "truffle migrate",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
