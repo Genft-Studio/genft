@@ -23,8 +23,6 @@ function isZero(b) {
 }
 
 const mine = ([salt, difficultyBits, dnaBits, address]) => {
-    console.log('in worker:', salt, difficultyBits, dnaBits, address)
-
     const difficultyMask = Buffer.from(new Uint8Array(32))
     rshift.mutate(difficultyMask, difficultyBits, 1)
 
@@ -52,13 +50,8 @@ const mine = ([salt, difficultyBits, dnaBits, address]) => {
     var time = Math.floor(rawTime);
     var khs = Math.round(count/rawTime/1000);
     var dna = and.pure(hash, dnaMask).slice(-Math.ceil(dnaBits / 8))
-    return {seed: guess, dna, time, hash, hashes: count, khs, difficultyBits, dnaBits, salt};
+    return {seed: guess, dna, time, hash, hashes: count, khs};
 }
-
-// const onmessage = function(salt, difficultyBits, dnaBits, address){
-//     var result = mine(salt, difficultyBits, dnaBits, address);
-//     postMessage(result);
-// }
 
 exposeWorker(mine)
 

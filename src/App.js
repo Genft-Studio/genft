@@ -9,7 +9,7 @@ import {
 import mergeImages from 'merge-images'
 import TokenView from "./TokenView";
 import FactoryFactory from "./FactoryFactory";
-import TokenMiner from "./TokenMiner";
+import MineToken from "./MineToken";
 
 function App() {
     return (
@@ -37,7 +37,7 @@ function App() {
                         <TokenView />
                     </Route>
                     <Route path="/:collectionId" exact>
-                        <TokenMiner />
+                        <MineToken />
                     </Route>
                     <Route path="/" exact>
                         <Home />
