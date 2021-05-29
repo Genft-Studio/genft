@@ -158,20 +158,20 @@ function FactoryFactory() {
                             <div className="factory-preview">
                                 {ipfsResults.layers.map((layer, layerIndex) => {
                                     return (
-                                        <>
+                                        <div className="layers">
                                             <h3>Layer {layerIndex}</h3>
                                             {layer.map(imageData => {
                                                 return (
                                                     <img src={imageData} />
                                                 )
                                             })}
-                                        </>
+                                        </div>
                                     )
                                 })}
+                                <h2>Random Sample</h2>
+                                <TokenView genome={ipfsResults} />
                             </div>
                         )}
-
-                        <TokenView genome={ipfsResults} />
 
                         <br />
                         <button disabled>

@@ -68,28 +68,37 @@ function TokenView(props) {
         // mergeImages(['/assets/body.png', '/assets/eyes.png', '/assets/mouth.png'])
         //     .then(b64 => document.querySelector('.gen-img').src = b64)
 
-        randomDna()
+        if(props.dna) {
+            setDna(props.dna)
+        } else {
+            randomDna()
+        }
 
     }, [])
 
     return (
-        <div className="App">
-            <header className="App-container">
-                <h1>Token Viewer</h1>
-                DNA:
-                <input value={dna} onChange={e => setDna(e.target.value)} />
-                <button onClick={handleRandomDna}>
-                    Random
-                </button>
-                <br />
+        <div class="token-view">
+            DNA:
+            {props.dna && (
+                <>
+                    {props.dna}
+                </>
+            )}
+            {!props.dna && (
+                <>
+                    <input value={dna} onChange={e => setDna(e.target.value)} />
+                    <button onClick={handleRandomDna}>
+                        Random
+                    </button>
+                </>
+            )}
+            <br />
 
-                <img src="" className="gen-img" alt="logo" />
+            <img src="" className="gen-img" alt="logo" />
 
-                {!_.isNull(imageData) && (
-                    <img src={imageData} alt="" style={{border: "4px solid #eeeeee"}} />
-                )}
-
-            </header>
+            {!_.isNull(imageData) && (
+                <img src={imageData} alt="" style={{border: "4px solid #eeeeee"}} />
+            )}
         </div>
     );
 

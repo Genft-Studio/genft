@@ -7,8 +7,8 @@ import {
     Link
 } from "react-router-dom";
 import mergeImages from 'merge-images'
-import TokenView from "./TokenView";
 import FactoryFactory from "./FactoryFactory";
+import TokenPage from "./TokenPage";
 
 function App() {
     return (
@@ -33,7 +33,7 @@ function App() {
                         <FactoryFactory />
                     </Route>
                     <Route path="/token">
-                        <TokenView />
+                        <TokenPage />
                     </Route>
                     <Route path="/">
                         <Home />

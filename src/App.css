@@ -106,7 +106,7 @@ label.file-upload:hover{
   padding-bottom: 30px;
 }
 
-.factory-preview img {
+.factory-preview .layers img {
   max-width: 50px;
   border: 1px solid #666;
 }
