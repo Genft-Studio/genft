@@ -13,6 +13,7 @@
     "ethers": "^5.2.0",
     "lodash": "^4.17.21",
     "merge-images": "^2.0.0",
+    "nft.storage": "^1.4.0",
     "node-sass": "5.0.0",
     "react": "^17.0.2",
     "react-app-rewired": "^2.1.8",

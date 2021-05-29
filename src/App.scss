@@ -41,8 +41,8 @@
 }
 
 .App-container {
-  display: flex;
-  flex-direction: column;
+  /*display: flex;*/
+  /*flex-direction: column;*/
   align-items: center;
   justify-content: center;
 }
@@ -77,9 +77,10 @@ nav li a:hover {
 
 
 label.file-upload input[type=file] {
-  display: none;
+  /*display: none;*/
 }
 
+button,
 label.file-upload {
   padding: 6px 20px;
   margin: 10px;
@@ -93,6 +94,7 @@ label.file-upload {
   outline: none;
 }
 
+button:hover,
 label.file-upload:hover{
   position: relative;
   top: 3px;
@@ -100,6 +102,16 @@ label.file-upload:hover{
   box-shadow: 5px 5px 0px 0px #444444;
 }
 
+.factory-preview {
+  border: 3px solid #999;
+  margin: 0 50px;
+  padding-bottom: 30px;
+}
+
+.factory-preview .layers img {
+  max-width: 50px;
+  border: 1px solid #666;
+}
 #background {
   position: fixed;
   z-index: -99999;
