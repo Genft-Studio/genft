@@ -7,20 +7,34 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "bitwise-buffer": "^1.0.2",
+    "bootstrap": "^5.0.1",
+    "buffer": "^6.0.3",
+    "ethers": "^5.2.0",
     "lodash": "^4.17.21",
     "merge-images": "^2.0.0",
+    "node-sass": "5.0.0",
     "react": "^17.0.2",
+    "react-app-rewired": "^2.1.8",
+    "react-bootstrap": "^1.6.0",
     "react-dom": "^17.0.2",
+    "react-hooks-worker": "^1.0.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "react-tsparticles": "^1.27.0",
     "truffle-contract-size": "^2.0.1",
-    "web-vitals": "^1.0.1"
+    "web-vitals": "^1.0.1",
+    "worker-loader": "^3.0.8",
+    "worker-plugin": "^5.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "react-app-rewired start",
+    "build": "truffle compile && react-app-rewired build",
+    "build:contract": "truffle compile",
+    "build:ui": "react-app-rewired build",
+    "deploy": "truffle migrate",
+    "test": "react-app-rewired test",
+    "eject": "react-app-rewired eject"
   },
   "eslintConfig": {
     "extends": [

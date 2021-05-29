@@ -1,5 +1,5 @@
 import logo from './logo.svg';
-import './App.css';
+import './App.scss';
 import {
     HashRouter as Router,
     Switch,
@@ -9,6 +9,7 @@ import {
 import mergeImages from 'merge-images'
 import TokenView from "./TokenView";
 import FactoryFactory from "./FactoryFactory";
+import MineToken from "./MineToken";
 
 function App() {
     return (
@@ -29,13 +30,16 @@ function App() {
                 </nav>
 
                 <Switch>
-                    <Route path="/factory-factory">
+                    <Route path="/factory-factory" exact>
                         <FactoryFactory />
                     </Route>
-                    <Route path="/token">
+                    <Route path="/token" exact>
                         <TokenView />
                     </Route>
-                    <Route path="/">
+                    <Route path="/:collectionId" exact>
+                        <MineToken />
+                    </Route>
+                    <Route path="/" exact>
                         <Home />
                     </Route>
                 </Switch>
