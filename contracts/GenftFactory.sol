@@ -7,7 +7,7 @@ import "./Genft.sol";
 
 contract GenftFactory is Ownable {
     Genft[] public instances;
-    event InstanceCreated(address indexed _from, address indexed _instance);
+    event InstanceCreated(address indexed _from, address indexed _instance, uint256 indexed _instanceNumber);
     address walletAddress;
 
     function get(
@@ -36,7 +36,7 @@ contract GenftFactory is Ownable {
             _commissionPercentage
         );
         instances.push(instance);
-        emit InstanceCreated(msg.sender, address(instance));
+        emit InstanceCreated(msg.sender, address(instance), instances.length-1);
     }
 
     function setWalletAddress(address addr) public onlyOwner {
