@@ -9,6 +9,7 @@ import body2 from './assets/body-02.png'
 import body3 from './assets/body-03.png'
 import eyes2 from './assets/eyes-02.png'
 import mouth2 from './assets/mouth-02.png'
+import {SAMPLE_GENOME} from "./sampleData";
 
 function TokenView(props) {
     const [dna, setDna] = useState("")
@@ -56,13 +57,15 @@ function TokenView(props) {
             console.log("props.genome", props.genome)
             setGenome(props.genome)
         } else {
-            setGenome({
-                layers: [
-                    [body, body2, body3],
-                    [eyes, eyes2],
-                    [mouth, mouth2]
-                ]
-            })
+            setGenome(SAMPLE_GENOME)
+
+            // setGenome({
+            //     layers: [
+            //         [body, body2, body3],
+            //         [eyes, eyes2],
+            //         [mouth, mouth2]
+            //     ]
+            // })
         }
 
         // mergeImages(['/assets/body.png', '/assets/eyes.png', '/assets/mouth.png'])

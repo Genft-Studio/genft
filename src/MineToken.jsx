@@ -15,17 +15,9 @@ import mouth2 from "./assets/mouth-02.png";
 import Particles from "react-tsparticles";
 
 import './MineToken.scss'
+import {SAMPLE_GENOME} from "./sampleData";
 
-const TEST_SETTINGS = {
-    layers: [
-        [body, body2, body3],
-        [eyes, eyes2],
-        [mouth, mouth2]
-    ],
-    tokenId: '$OWL',
-    difficulty: 20,
-    genomeLength: 6 * 8
-}
+const TEST_SETTINGS = SAMPLE_GENOME
 
 const TEST_ADDRESS = '0x534Eb19E729E955308e5A9c37c90d4128e0F450F'
 
