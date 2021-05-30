@@ -12,8 +12,6 @@ import {ethers} from "ethers";
 import genftDetails from "./abis/Genft.json";
 import _ from "lodash";
 
-const TEST_SETTINGS = SAMPLE_GENOME
-
 const backgroundOptions = {
     background: {
         color: {
@@ -103,10 +101,12 @@ const MineToken = () => {
     const [signer, setSigner] = useState(null)
     const [myAddress, setMyAddress] = useState(null)
     const [genftContract, setGenftContract] = useState(null)
+    const [configCid, setConfigCid] = useState()
+    const [config, setConfig]= useState({})
 
     const handleFoundToken = async token => {
         if (token && token.dna) {
-            setFoundTokens([...foundTokens, {...token, img: await genftParser(token.dna, TEST_SETTINGS)}])
+            setFoundTokens([...foundTokens, {...token, img: await genftParser(token.dna, config)}])
         }
     }
 
@@ -153,11 +153,19 @@ const MineToken = () => {
 
             contractWithSigner.on("TokenMinted", async (from, dna, event) => {
                 console.log("TokenMinted event detected", from, dna, event)
-                if(from === signerAddress) {
+                if (from === signerAddress) {
                     console.log("Detected mint of new Genft token by current user: ", dna)
                     // TODO: Redirect to token page for newly minted token
                 }
             })
+
+            const _configCid = await contract.uiConfigUri()
+            setConfigCid(_configCid)
+            console.log('config CID:', _configCid)
+
+            const _config = await fetchFromIpfs(_configCid)
+            setConfig(_config)
+            console.log(_config)
         } catch (e) {
             console.log("ERROR: Using GenftFactory or Genft contract: ", e.toString())
             return
@@ -174,6 +182,32 @@ const MineToken = () => {
             // TODO: Fix whatever is failing with a VM Exception when attempting to run genftContract.mint
         } catch (e) {
             console.log("ERROR: Minting token: ", e.toString())
+        }
+    }
+
+    const ipfsGatewayUrl = (cid) => {
+        return 'https://' + cid + '.ipfs.dweb.link/'
+    }
+
+    const fetchFromIpfs = async cid => {
+        // Fetch assets from IPFS gateway
+        // TODO: Maybe use JS IPFS library to fetch data instead?
+        let jsonData
+        try {
+            const assetUrl = ipfsGatewayUrl(cid)
+            console.log("Fetching assets from IPFS with gateway url: ", assetUrl)
+            let response = await fetch(assetUrl)
+            if (response.ok) { // if HTTP-status is 200-299 get the response body
+                jsonData = await response.json()
+                // setAssetData(jsonData)
+                console.log("assetData: ", jsonData)
+            } else {
+                console.log("HTTP-Error: " + response.status)
+            }
+            return jsonData
+        } catch (e) {
+            console.log("ERROR: Fetching data from IPFS gateway: ", e.toString())
+            return
         }
     }
 
@@ -198,10 +232,9 @@ const MineToken = () => {
                         {isMining &&
                         <>
                             <TokenMiner
-                                tokenId={TEST_SETTINGS.tokenId}
-                                difficulty={TEST_SETTINGS.difficulty}
-                                genomeLength={TEST_SETTINGS.genomeLength}
-                                // address={TEST_ADDRESS}
+                                tokenId={config.tokenSymbol}
+                                difficulty={config.difficulty}
+                                genomeLength={config.genomeLength}
                                 address={myAddress}
                                 onSuccess={handleFoundToken}
                             />
@@ -210,8 +243,11 @@ const MineToken = () => {
                         }
                         <div className='availableTokens'>
                             {foundTokens.map(token =>
-                                <div key={token.dna} id={`token-${token.dna}`} className='token' onClick={() => {handleMintToken(token.seed, "")}}>
-                                    {token.img.imageData && <img src={token.img.imageData} title={`DNA: ${token.dna}`} />}
+                                <div key={token.dna} id={`token-${token.dna}`} className='token' onClick={() => {
+                                    handleMintToken(token.seed, "")
+                                }}>
+                                    {token.img.imageData &&
+                                    <img src={token.img.imageData} title={`DNA: ${token.dna}`}/>}
                                 </div>
                             )}
                         </div>

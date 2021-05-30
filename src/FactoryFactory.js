@@ -9,7 +9,6 @@ import {Link} from "react-router-dom";
 function FactoryFactory() {
     const nftStorageKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnaXRodWJ8MTU5NzUxIiwiaXNzIjoibmZ0LXN0b3JhZ2UiLCJpYXQiOjE2MTYxODI3MTI2ODUsIm5hbWUiOiJTSVgtQklUIn0.zqSNtZNehlfluFHVtRipupGOnoq_09Lg2w6dIe9ec2Q"
     const genftFactoryAddress = "0x74AaF8415506AdefD3f267A570fd0dE7d4101eC4"  // TODO: LOCAL DEV SERVER ADDRESS - Replace this with deployed address
-    // const genftFactoryAddress = "0x544cD79d7DDbf5aF9b3b70a00db16243f477De7e"  // TODO: LOCAL DEV SERVER ADDRESS - Replace this with deployed address
     const [nftStorageClient, setNftStorageClient] = useState(null)
     const [cidRoot, setCidRoot] = useState("")
     const [localFiles, setLocalFiles] = useState([[], [], []])
@@ -19,6 +18,10 @@ function FactoryFactory() {
     const [genftFactoryContract, setGenftFactoryContract] = useState(null)
     const [genftAddress, setGenftAddress] = useState(null)
     const [genftId, setGenftId] = useState(null)
+    const [tokenName, setTokenName] = useState('')
+    const [tokenSymbol, setTokenSymbol] = useState('')
+    const [initialPrice, setInitialPrice] = useState(".001")
+    const [priceIncrement, setPriceIncrement] = useState(".00005")
 
     const filesToFileNames = (files) => {
         let fileNames = []
@@ -133,15 +136,10 @@ function FactoryFactory() {
 
         // Initiate transaction to Genft Factory to create a new Genft contract
         // Include IPFS cid for asset data
-        let tokenName = "Genft Genesis"
-        let tokenSymbol = "GENFT-0"
         let minimumDifficulty = 20
         let dnaBitLength = 6 * 8
-        let firstPrice = "0.1"
-        let priceIncrement = "0.005"
         let baseTokenURI = ""           // TODO: Set this to something appropriate
-        let uiConfigUri = ""            // TODO: Set this to something appropriate
-        let commissionPercentage = 10
+        let commissionPercentage = 5
 
         try {
             const result = await genftFactoryContract.get(
@@ -149,12 +147,11 @@ function FactoryFactory() {
                 tokenSymbol,
                 minimumDifficulty,
                 dnaBitLength,
-                ethers.utils.parseEther(firstPrice),
+                ethers.utils.parseEther(initialPrice),
                 ethers.utils.parseEther(priceIncrement),
                 baseTokenURI,
-                uiConfigUri,
+                cidRoot,
                 commissionPercentage,
-                // cidRoot              // TODO: Include this IPFS CID pointing to genome data
             )
         } catch (e) {
             console.log("ERROR: Problem running get() on factory contract: ", e.toString())
@@ -179,7 +176,11 @@ function FactoryFactory() {
         // TODO: Include NFT collection configuration data - anything that doesn't need to be saved on-chain
         let data = {
             // filenames: [filesToFileNames(localFiles[0]), filesToFileNames(localFiles[1]), filesToFileNames(localFiles[2])],
-            layers: fileData
+            layers: fileData,
+            difficulty: 20,
+            genomeLength: 5 * 8,
+            tokenName,
+            tokenSymbol
         }
 
         console.log("data to push to IPFS: ", data)
@@ -217,6 +218,28 @@ function FactoryFactory() {
 
                 {_.isEmpty(cidRoot) && (
                     <>
+                        <h2>Token Settings</h2>
+                        <h3>Name</h3>
+                        <label>
+                            <input type="text" value={tokenName}
+                                   onChange={e => setTokenName(e.target.value)} />
+                        </label>
+                        <h3>Symbol</h3>
+                        <label>
+                            <input type="text" value={tokenSymbol}
+                                   onChange={e => setTokenSymbol(e.target.value)} />
+                        </label>
+                        <h3>Initial Price</h3>
+                        <label>
+                            <input type="text" value={initialPrice}
+                                   onChange={e => setInitialPrice(e.target.value)} />
+                        </label>
+                        <h3>Price Increment</h3>
+                        <label>
+                            <input type="text" value={priceIncrement}
+                                   onChange={e => setPriceIncrement(e.target.value)} />
+                        </label>
+
                         <h2>Select Source Files</h2>
                         <h3>Layer 0</h3>
                         <label className="file-upload">
@@ -278,7 +301,7 @@ function FactoryFactory() {
                         {!_.isNull(genftId) && (
                             <h2>
                                 Genft Minting Contract Deployed:<br />
-                                <Link to={genftId}>#{genftId}: {genftAddress}</Link>
+                                <Link to={genftAddress}>#{genftId}: {genftAddress}</Link>
                             </h2>
                         )}
                         <br />
