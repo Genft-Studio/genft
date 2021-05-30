@@ -4,14 +4,6 @@ import {Button} from "react-bootstrap";
 import {genftParser} from "./genft-parser";
 import {useParams} from "react-router-dom";
 
-import body from "./assets/body.png";
-import body2 from "./assets/body-02.png";
-import body3 from "./assets/body-03.png";
-import eyes from "./assets/eyes.png";
-import eyes2 from "./assets/eyes-02.png";
-import mouth from "./assets/mouth.png";
-import mouth2 from "./assets/mouth-02.png";
-
 import Particles from "react-tsparticles";
 
 import './MineToken.scss'
@@ -123,7 +115,7 @@ const MineToken = () => {
                 {isMining &&
                 <>
                     <TokenMiner
-                        tokenId={TEST_SETTINGS.tokenId}
+                        tokenId={TEST_SETTINGS.tokenSymbol}
                         difficulty={TEST_SETTINGS.difficulty}
                         genomeLength={TEST_SETTINGS.genomeLength}
                         address={TEST_ADDRESS}

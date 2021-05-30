@@ -25,7 +25,7 @@ export const SAMPLE_GENOME = {
         [eyes, eyes2, eyes3, eyes4, eyes5, eyes6, eyes7],
         [mouth, mouth2, mouth3, mouth4, mouth5, mouth6]
     ],
-    tokenId: '$OWL',
+    tokenSymbol: '$OWL',
     difficulty: 20,
-    genomeLength: 6 * 8
+    genomeLength: 5 * 8
 }

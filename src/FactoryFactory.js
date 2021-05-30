@@ -2,6 +2,9 @@ import _ from "lodash"
 import {useEffect, useState} from "react";
 import {NFTStorage} from "nft.storage";
 import TokenView from "./TokenView";
+import {ethers} from "ethers";
+import GenftFactory from './abis/GenftFactory.json'
+import {Link} from "react-router-dom";
 
 function FactoryFactory() {
     const nftStorageKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnaXRodWJ8MTU5NzUxIiwiaXNzIjoibmZ0LXN0b3JhZ2UiLCJpYXQiOjE2MTYxODI3MTI2ODUsIm5hbWUiOiJTSVgtQklUIn0.zqSNtZNehlfluFHVtRipupGOnoq_09Lg2w6dIe9ec2Q"
@@ -9,10 +12,16 @@ function FactoryFactory() {
     const [cidRoot, setCidRoot] = useState("")
     const [localFiles, setLocalFiles] = useState([[], [], []])
     const [ipfsResults, setIpfsResults] = useState(null)
+    const [tokenName, setTokenName] = useState('')
+    const [tokenSymbol, setTokenSymbol] = useState('')
+    const [startingPrice, setStartingPrice] = useState(.001)
+    const [priceIncrement, setPriceIncrement] = useState(.0001)
+    const [buttonsDisabled, setButtonsDisabled] = useState(false)
+    const [instance, setInstance] = useState()
 
     const filesToFileNames = (files) => {
         let fileNames = []
-        for(let i=0; i<files.length; i++) {
+        for (let i = 0; i < files.length; i++) {
             fileNames.push(files[i].name)
         }
         return fileNames
@@ -53,7 +62,7 @@ function FactoryFactory() {
 
     const handleFileUpload = async (event, layer) => {
         const files = event.target.files;
-        for(let i=0; i<files.length; i++) {
+        for (let i = 0; i < files.length; i++) {
             // upload a file
             const file = files[i];
             console.log("file ", i, file);
@@ -79,9 +88,9 @@ function FactoryFactory() {
         // Upload files to IPFS in a single JSON blob, get CID for blob
         let cid
         let fileData = []
-        for(let layerIndex=0; layerIndex<localFiles.length; layerIndex++) {
+        for (let layerIndex = 0; layerIndex < localFiles.length; layerIndex++) {
             fileData[layerIndex] = []
-            for(let fileIndex=0; fileIndex<localFiles[layerIndex].length; fileIndex++) {
+            for (let fileIndex = 0; fileIndex < localFiles[layerIndex].length; fileIndex++) {
                 fileData[layerIndex].push(await toBase64(localFiles[layerIndex][fileIndex]))
             }
         }
@@ -89,7 +98,11 @@ function FactoryFactory() {
         // TODO: Include NFT collection configuration data - anything that doesn't need to be saved on-chain
         let data = {
             // filenames: [filesToFileNames(localFiles[0]), filesToFileNames(localFiles[1]), filesToFileNames(localFiles[2])],
-            layers: fileData
+            layers: fileData,
+            difficulty: 20,
+            tokenName,
+            tokenSymbol,
+            genomeLength: 5
         }
 
         console.log("data to push to IPFS: ", data)
@@ -110,13 +123,53 @@ function FactoryFactory() {
         setIpfsResults(fetchedData)
     }
 
+    const handleDeploy = async () => {
+        // setButtonsDisabled(true)
+        if (typeof window.ethereum !== 'undefined') {
+            console.log('MetaMask is installed!')
+        }
+        const accounts = await window.ethereum.request({method: 'eth_requestAccounts'})
+        const account = accounts[0]
+        console.log(account)
+
+        // This can be an address or an ENS name
+        const address = '0x8d22a1Fd469c9bc4b7d84426a347936e40d30B43'
+        const provider = ethers.getDefaultProvider()
+        const signer = (new ethers.providers.Web3Provider(window.ethereum)).getSigner()
+
+        const factory = new ethers.Contract(
+            address,
+            GenftFactory.abi,
+            signer
+        )
+
+        console.log(factory)
+
+        factory.on('InstanceCreated', (_, instance, e) => instance && setInstance(instance))
+
+        const minter = await factory.get(
+            tokenName,
+            tokenSymbol,
+            20,
+            40,
+            ethers.utils.parseEther(startingPrice.toString(10)),
+            ethers.utils.parseEther(priceIncrement.toString(10)),
+            '',
+            cidRoot,
+            5
+        )
+        console.log(minter)
+
+        setButtonsDisabled(false)
+    }
+
     useEffect(() => {
         console.log("localFiles", localFiles)
     }, [localFiles])
 
     useEffect(() => {
         // Initialize nft.storage client
-        const client = new NFTStorage({ token: nftStorageKey })
+        const client = new NFTStorage({token: nftStorageKey})
         setNftStorageClient(client)
     }, [])
 
@@ -127,20 +180,38 @@ function FactoryFactory() {
 
                 {_.isEmpty(cidRoot) && (
                     <>
+                        <h2>Token Settings</h2>
+                        <h3>Name</h3>
+                        <label>
+                            <input type="text" value={tokenName} onChange={({target: {value}}) => setTokenName(value)}/>
+                        </label>
+                        <h3>Symbol</h3>
+                        <label>
+                            <input type="text" value={tokenSymbol} onChange={({target: {value}}) => setTokenSymbol(value)}/>
+                        </label>
+                        <h3>Starting Price</h3>
+                        <label>
+                            <input type="number" value={startingPrice} onChange={({target: {value}}) => setStartingPrice(value)}/>
+                        </label>
+                        <h3>Price Increment</h3>
+                        <label>
+                            <input type="number" value={priceIncrement} onChange={({target: {value}}) => setPriceIncrement(value)}/>
+                        </label>
+                        <br/>
                         <h2>Select Source Files</h2>
                         <h3>Layer 0</h3>
                         <label className="file-upload">
-                            <input type="file" multiple onChange={e => handleFileUpload(e, 0)} />
+                            <input type="file" multiple onChange={e => handleFileUpload(e, 0)}/>
                         </label>
                         <h3>Layer 1</h3>
                         <label className="file-upload">
-                            <input type="file" multiple onChange={e => handleFileUpload(e, 1)} />
+                            <input type="file" multiple onChange={e => handleFileUpload(e, 1)}/>
                         </label>
                         <h3>Layer 2</h3>
                         <label className="file-upload">
-                            <input type="file" multiple onChange={e => handleFileUpload(e, 2)} />
+                            <input type="file" multiple onChange={e => handleFileUpload(e, 2)}/>
                         </label>
-                        <br />
+                        <br/>
 
                         <button onClick={handleIPFSUpload}>
                             <h2>Push Genome Data to IPFS</h2>
@@ -150,7 +221,7 @@ function FactoryFactory() {
                 {!_.isEmpty(cidRoot) && (
                     <>
                         <h3>
-                            Image layer data commited to IPFS<br />
+                            Image layer data commited to IPFS<br/>
                             <a href={ipfsGatewayUrl(cidRoot)} target="_blank">{cidRoot}</a>
                         </h3>
 
@@ -162,23 +233,28 @@ function FactoryFactory() {
                                             <h3>Layer {layerIndex}</h3>
                                             {layer.map(imageData => {
                                                 return (
-                                                    <img src={imageData} />
+                                                    <img src={imageData}/>
                                                 )
                                             })}
                                         </div>
                                     )
                                 })}
                                 <h2>Random Sample</h2>
-                                <TokenView genome={ipfsResults} showMeta={true} />
+                                <TokenView genome={ipfsResults} showMeta={true}/>
                             </div>
                         )}
 
-                        <br />
-                        <button disabled>
+                        <br/>
+                        {!instance &&
+                        <button disabled={buttonsDisabled} onClick={handleDeploy}>
                             <h2>Deploy NFT Minter</h2>
                         </button>
-                        <br />
-                        <br />
+                        }
+                        {instance &&
+                            <Link as='button' to={`/${instance}`}>Mint {tokenName} Tokens</Link>
+                        }
+                        <br/>
+                        <br/>
                     </>
                 )}
 

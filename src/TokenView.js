@@ -2,13 +2,6 @@ import _ from "lodash"
 import mergeImages from 'merge-images'
 import {useState, useEffect} from "react"
 import {genftParser} from "./genft-parser";
-import body from './assets/body.png'
-import eyes from './assets/eyes.png'
-import mouth from './assets/mouth.png'
-import body2 from './assets/body-02.png'
-import body3 from './assets/body-03.png'
-import eyes2 from './assets/eyes-02.png'
-import mouth2 from './assets/mouth-02.png'
 import {SAMPLE_GENOME} from "./sampleData";
 
 function TokenView(props) {
@@ -69,7 +62,7 @@ function TokenView(props) {
     }, [])
 
     return (
-        <div class="token-view">
+        <div className="token-view">
             DNA:
             {props.dna && (
                 <>
@@ -94,7 +87,7 @@ function TokenView(props) {
             {showMeta && !_.isNull(genft) && (
                 <>
                 <h3>Metadata</h3>
-                    <ul class="metadata">
+                    <ul className="metadata">
                         <li>Layer 0: {genft.layer0}</li>
                         <li>Layer 1: {genft.layer1}</li>
                         <li>Layer 2: {genft.layer2}</li>
