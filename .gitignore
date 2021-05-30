@@ -10,7 +10,7 @@
 
 # production
 /build
-/src/abis
+#/src/abis
 
 # misc
 .DS_Store

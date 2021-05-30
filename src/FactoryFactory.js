@@ -2,13 +2,21 @@ import _ from "lodash"
 import {useEffect, useState} from "react";
 import {NFTStorage} from "nft.storage";
 import TokenView from "./TokenView";
+import {ethers} from "ethers";
+import genftFactoryDetails from "./abis/GenftFactory.json";
+import {Link} from "react-router-dom";
 
 function FactoryFactory() {
     const nftStorageKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnaXRodWJ8MTU5NzUxIiwiaXNzIjoibmZ0LXN0b3JhZ2UiLCJpYXQiOjE2MTYxODI3MTI2ODUsIm5hbWUiOiJTSVgtQklUIn0.zqSNtZNehlfluFHVtRipupGOnoq_09Lg2w6dIe9ec2Q"
+    const genftFactoryAddress = "0x74AaF8415506AdefD3f267A570fd0dE7d4101eC4"  // TODO: LOCAL DEV SERVER ADDRESS - Replace this with deployed address
     const [nftStorageClient, setNftStorageClient] = useState(null)
     const [cidRoot, setCidRoot] = useState("")
     const [localFiles, setLocalFiles] = useState([[], [], []])
     const [ipfsResults, setIpfsResults] = useState(null)
+    const [provider, setProvider] = useState(null)
+    const [signer, setSigner] = useState(null)
+    const [genftFactoryContract, setGenftFactoryContract] = useState(null)
+    const [genftAddress, setGenftAddress] = useState(null)
 
     const filesToFileNames = (files) => {
         let fileNames = []
@@ -70,6 +78,86 @@ function FactoryFactory() {
         console.log("uploaded file names", filesToFileNames(files))
 
         setLocalFiles(tmpLocalFiles)
+    }
+
+    const handleConnectEthereum = async () => {
+        console.log("Request to connect to Ethereum")
+        let newProvider
+        let newSigner
+        try {
+            await window.ethereum.enable()
+            newProvider = new ethers.providers.Web3Provider(window.ethereum);
+            console.log("provider:", newProvider)
+            setProvider(newProvider)
+            newSigner = newProvider.getSigner();
+            console.log("signer:", newSigner)
+            setSigner(newSigner)
+
+            // Sanity check
+            const blockNumber = await newProvider.getBlockNumber()
+            console.log("blockNumber:", blockNumber)
+            const myAddress = await newSigner.getAddress()
+            console.log("myAddress:", myAddress)
+        } catch (e) {
+            console.log("ERROR: Connecting to Ethereum wallet: ", e.toString())
+            return
+        }
+
+        console.log("abi", genftFactoryDetails.abi)
+        try {
+            // Setup Genft Factory contract model
+            const contract = new ethers.Contract(genftFactoryAddress, genftFactoryDetails.abi, newProvider)
+            const contractWithSigner = contract.connect(newSigner)
+            setGenftFactoryContract(contractWithSigner)
+        } catch (e) {
+            console.log("ERROR: Using GenftFactory contract: ", e.toString())
+            return
+        }
+    }
+
+    const handleDeployMinter = async () => {
+        console.log("Request to deploy minter contract")
+        const signerAddress = await signer.getAddress();
+
+        // Setup event listener for child contract creation
+        genftFactoryContract.on("InstanceCreated", async (from, child, event) => {
+            console.log("InstanceCreated event received", from, child, event)
+            if(from === signerAddress) {
+                console.log("Detected creation of new Genft child contract instance by current user: ", child)
+                setGenftAddress(child)
+            }
+        })
+
+        // Initiate transaction to Genft Factory to create a new Genft contract
+        // Include IPFS cid for asset data
+        // TODO: Parameter validation
+        let tokenName = "Genft Genesis"
+        let tokenSymbol = "GENFT-0"
+        let minimumDifficulty = 20
+        let dnaBitLength = 6 * 8
+        let firstPrice = "0.1"
+        let priceIncrement = "0.005"
+        let baseTokenURI = ""
+        let uiConfigUri = ""
+        let commissionPercentage = 10
+
+        try {
+            const result = await genftFactoryContract.get(
+                tokenName,
+                tokenSymbol,
+                minimumDifficulty,
+                dnaBitLength,
+                ethers.utils.parseEther(firstPrice),
+                ethers.utils.parseEther(priceIncrement),
+                baseTokenURI,
+                uiConfigUri,
+                commissionPercentage,
+                // cidRoot
+            )
+        } catch (e) {
+            console.log("ERROR: Problem running get() on factory contract: ", e.toString())
+        }
+
     }
 
     // Use nft.storage to push and pin data to IPFS
@@ -174,9 +262,23 @@ function FactoryFactory() {
                         )}
 
                         <br />
-                        <button disabled>
-                            <h2>Deploy NFT Minter</h2>
-                        </button>
+                        {_.isNull(signer) && (
+                            <button onClick={handleConnectEthereum}>
+                                Connect Wallet
+                            </button>
+                        )}
+                        {!_.isNull(signer) && _.isNull(genftAddress) && (
+                            <button onClick={handleDeployMinter}>
+                                <h2>Deploy NFT Minter</h2>
+                            </button>
+                        )}
+
+                        {!_.isNull(genftAddress) && (
+                            <h2>
+                                Genft Minting Contract Deployed:<br />
+                                <Link to={genftAddress}>{genftAddress}</Link>
+                            </h2>
+                        )}
                         <br />
                         <br />
                     </>
