@@ -107,6 +107,7 @@ const backgroundOptions = {
 const MineToken = () => {
     const {collectionId} = useParams()
     const genftFactoryAddress = "0x74AaF8415506AdefD3f267A570fd0dE7d4101eC4"  // TODO: LOCAL DEV SERVER ADDRESS - Replace this with deployed address
+    // const genftFactoryAddress = "0x544cD79d7DDbf5aF9b3b70a00db16243f477De7e"  // TODO: LOCAL DEV SERVER ADDRESS - Replace this with deployed address
     const [isMining, setIsMining] = useState(false)
     const [foundTokens, setFoundTokens] = useState([])
     const [provider, setProvider] = useState(null)

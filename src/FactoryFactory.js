@@ -9,6 +9,7 @@ import {Link} from "react-router-dom";
 function FactoryFactory() {
     const nftStorageKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnaXRodWJ8MTU5NzUxIiwiaXNzIjoibmZ0LXN0b3JhZ2UiLCJpYXQiOjE2MTYxODI3MTI2ODUsIm5hbWUiOiJTSVgtQklUIn0.zqSNtZNehlfluFHVtRipupGOnoq_09Lg2w6dIe9ec2Q"
     const genftFactoryAddress = "0x74AaF8415506AdefD3f267A570fd0dE7d4101eC4"  // TODO: LOCAL DEV SERVER ADDRESS - Replace this with deployed address
+    // const genftFactoryAddress = "0x544cD79d7DDbf5aF9b3b70a00db16243f477De7e"  // TODO: LOCAL DEV SERVER ADDRESS - Replace this with deployed address
     const [nftStorageClient, setNftStorageClient] = useState(null)
     const [cidRoot, setCidRoot] = useState("")
     const [localFiles, setLocalFiles] = useState([[], [], []])
@@ -17,6 +18,7 @@ function FactoryFactory() {
     const [signer, setSigner] = useState(null)
     const [genftFactoryContract, setGenftFactoryContract] = useState(null)
     const [genftAddress, setGenftAddress] = useState(null)
+    const [genftId, setGenftId] = useState(null)
 
     const filesToFileNames = (files) => {
         let fileNames = []
@@ -120,11 +122,12 @@ function FactoryFactory() {
         const signerAddress = await signer.getAddress();
 
         // Setup event listener for child contract creation
-        genftFactoryContract.on("InstanceCreated", async (from, child, event) => {
-            console.log("InstanceCreated event received", from, child, event)
+        genftFactoryContract.on("InstanceCreated", async (from, child, id, event) => {
+            console.log("InstanceCreated event received", from, child, id, event)
             if(from === signerAddress) {
-                console.log("Detected creation of new Genft child contract instance by current user: ", child)
+                console.log("Detected creation of new Genft child contract instance by current user: #", id, child)
                 setGenftAddress(child)
+                setGenftId(id.toString())
             }
         })
 
@@ -272,10 +275,10 @@ function FactoryFactory() {
                             </button>
                         )}
 
-                        {!_.isNull(genftAddress) && (
+                        {!_.isNull(genftId) && (
                             <h2>
                                 Genft Minting Contract Deployed:<br />
-                                <Link to={genftAddress}>{genftAddress}</Link>
+                                <Link to={genftId}>#{genftId}: {genftAddress}</Link>
                             </h2>
                         )}
                         <br />
