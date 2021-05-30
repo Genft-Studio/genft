@@ -74,6 +74,27 @@ export async function genftParser(dna, genome) {
     genft.rotateX = rotateX
     genft.rotateY = rotateY
 
+    genft.lookSide = "center"
+    genft.lookSideAmount = 0
+    if(rotateX < 0) {
+        genft.lookSide = "left"
+        genft.lookSideAmount = 0 - rotateX
+    } else if(rotateX > 0) {
+        genft.lookSide = "right"
+        genft.lookSideAmount = rotateX
+    }
+
+    genft.lookVertical = "center"
+    genft.lookVerticalAmount = 0
+    if(rotateY < 0) {
+        genft.lookVertical = "up"
+        genft.lookVerticalAmount = 0 - rotateY
+    } else if(rotateY > 0) {
+        genft.lookVertical = "down"
+        genft.lookVerticalAmount = rotateY
+    }
+
+
     // TODO: Implement Z rotation of image
     // const rotateZ = Math.floor(convertRange(genes[2], [0, 255], [0, 356]))
     // genft.rotateZ = rotateZ
@@ -81,6 +102,10 @@ export async function genftParser(dna, genome) {
     const layer0 = genes[2] % genome.layers[0].length
     const layer1 = genes[3] % genome.layers[1].length
     const layer2 = genes[4] % genome.layers[2].length
+
+    genft.layer0 = layer0
+    genft.layer1 = layer1
+    genft.layer2 = layer2
 
     // NOTE: Genes could be used more efficiently to allow extracting additional data without sacrificing resolution
 
@@ -91,6 +116,14 @@ export async function genftParser(dna, genome) {
     ]
 
     let b64 = await mergeImages(imageSources)
+
+    // let canvas = document.createElement("canvas")
+    // let ctx = canvas.getContext("2d")
+    // let image = new Image()
+    // image.onload = () => {
+    //     ctx.drawImage(image, 0, 0)
+    // }
+    // image.src = b64
 
     genft.imageData = b64
 

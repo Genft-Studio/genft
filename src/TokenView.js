@@ -15,6 +15,8 @@ function TokenView(props) {
     const [dna, setDna] = useState("")
     const [imageData, setImageData] = useState(null)
     const [genome, setGenome] = useState(null)
+    const [genft, setGenft] = useState(null)
+    const [showMeta, setShowMeta] = useState((props.showMeta === false) ? false : true)
 
     const getRandomInt = (max) => {
         return Math.floor(Math.random() * Math.floor(max));
@@ -37,11 +39,10 @@ function TokenView(props) {
     useEffect(() => {
         const asyncDnaChanged = async (dna) => {
             try {
-                const genft = await genftParser(dna, genome)
-                // const genft = await genftParser(dna)
-                console.log("parsed genft data: ", genft)
-
-                document.querySelector('.gen-img').src = genft.imageData
+                const genftResult = await genftParser(dna, genome)
+                console.log("parsed genft data: ", genftResult)
+                document.querySelector('.gen-img').src = genftResult.imageData
+                setGenft(genftResult)
             } catch (e) {
                 console.log("genftParser Error: ", e.toString())
                 // setImageData(null)
@@ -49,7 +50,6 @@ function TokenView(props) {
         }
 
         asyncDnaChanged(dna)
-
     }, [dna])
 
     useEffect(() => {
@@ -58,18 +58,7 @@ function TokenView(props) {
             setGenome(props.genome)
         } else {
             setGenome(SAMPLE_GENOME)
-
-            // setGenome({
-            //     layers: [
-            //         [body, body2, body3],
-            //         [eyes, eyes2],
-            //         [mouth, mouth2]
-            //     ]
-            // })
         }
-
-        // mergeImages(['/assets/body.png', '/assets/eyes.png', '/assets/mouth.png'])
-        //     .then(b64 => document.querySelector('.gen-img').src = b64)
 
         if(props.dna) {
             setDna(props.dna)
@@ -101,6 +90,20 @@ function TokenView(props) {
 
             {!_.isNull(imageData) && (
                 <img src={imageData} alt="" style={{border: "4px solid #eeeeee"}} />
+            )}
+            {showMeta && !_.isNull(genft) && (
+                <>
+                <h3>Metadata</h3>
+                    <ul class="metadata">
+                        <li>Layer 0: {genft.layer0}</li>
+                        <li>Layer 1: {genft.layer1}</li>
+                        <li>Layer 2: {genft.layer2}</li>
+                        <li>Look Side: {genft.lookSide}</li>
+                        <li>Look Side Amount: {genft.lookSideAmount}</li>
+                        <li>Look Vertical: {genft.lookVertical}</li>
+                        <li>Look Vertical Amount: {genft.lookVerticalAmount}</li>
+                    </ul>
+                </>
             )}
         </div>
     );
