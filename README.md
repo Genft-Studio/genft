@@ -5,28 +5,16 @@ The NFT artist uploads component images that can be assembled into a unique NFT 
 
 When the user wants a token, they go to the minting page and 'mine' for a valid DNA and submits it to the ERC721 contract. DNA is generated through a proof of work mining process. The miner runs as a web worker. When a seed is found the hashes to a valid token id, it can be claimed with the mint() function.
 
-## Available Scripts
+## Dev instructions
+1. Deploy factory contract and generate ABIs
+```bash
+% yarn build:contract
+% yarn deploy
+```
+2. Make a copy of config file
+```bash
+% cp config.sample.json config.json 
+```
+3. Edit it with the addresses from your environment
+4. `yarn start`
 
-In the project directory, you can run:
-
-### `yarn start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-You
-## Credits
-Created by Ken Hodler (@bgok) and Morgan Sherwood (@morganstar) at [Web3Weekend](https://web3.ethglobal.co/).

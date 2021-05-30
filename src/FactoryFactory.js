@@ -5,10 +5,9 @@ import TokenView from "./TokenView";
 import {ethers} from "ethers";
 import genftFactoryDetails from "./abis/GenftFactory.json";
 import {Link} from "react-router-dom";
+import {genftFactoryAddress, nftStorageKey} from "./config.json"
 
 function FactoryFactory() {
-    const nftStorageKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnaXRodWJ8MTU5NzUxIiwiaXNzIjoibmZ0LXN0b3JhZ2UiLCJpYXQiOjE2MTYxODI3MTI2ODUsIm5hbWUiOiJTSVgtQklUIn0.zqSNtZNehlfluFHVtRipupGOnoq_09Lg2w6dIe9ec2Q"
-    const genftFactoryAddress = "0x74AaF8415506AdefD3f267A570fd0dE7d4101eC4"  // TODO: LOCAL DEV SERVER ADDRESS - Replace this with deployed address
     const [nftStorageClient, setNftStorageClient] = useState(null)
     const [cidRoot, setCidRoot] = useState("")
     const [localFiles, setLocalFiles] = useState([[], [], []])

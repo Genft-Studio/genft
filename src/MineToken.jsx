@@ -93,8 +93,6 @@ const backgroundOptions = {
 
 const MineToken = () => {
     const {collectionId: tokenContractAddress} = useParams()
-    // const genftFactoryAddress = "0x74AaF8415506AdefD3f267A570fd0dE7d4101eC4"  // TODO: LOCAL DEV SERVER ADDRESS - Replace this with deployed address
-    // const genftFactoryAddress = "0x544cD79d7DDbf5aF9b3b70a00db16243f477De7e"  // TODO: LOCAL DEV SERVER ADDRESS - Replace this with deployed address
     const [isMining, setIsMining] = useState(false)
     const [foundTokens, setFoundTokens] = useState([])
     const [provider, setProvider] = useState(null)
@@ -181,7 +179,7 @@ const MineToken = () => {
             const result = await genftContract.mint(seed, tokenUri, {value: ethers.utils.parseEther('1.0')})
             // TODO: Fix whatever is failing with a VM Exception when attempting to run genftContract.mint
         } catch (e) {
-            console.log("ERROR: Minting token: ", e.toString())
+            console.log("ERROR: Minting token: ", JSON.stringify(e))
         }
     }
 
