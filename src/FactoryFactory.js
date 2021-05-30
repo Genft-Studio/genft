@@ -169,7 +169,7 @@ function FactoryFactory() {
                                     )
                                 })}
                                 <h2>Random Sample</h2>
-                                <TokenView genome={ipfsResults} />
+                                <TokenView genome={ipfsResults} showMeta={true} />
                             </div>
                         )}
 
@@ -177,6 +177,8 @@ function FactoryFactory() {
                         <button disabled>
                             <h2>Deploy NFT Minter</h2>
                         </button>
+                        <br />
+                        <br />
                     </>
                 )}
 

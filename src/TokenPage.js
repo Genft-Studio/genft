@@ -5,7 +5,7 @@ function TokenPage(props) {
         <div className="App">
             <header className="App-container">
                 <h1>Token Viewer</h1>
-                <TokenView />
+                <TokenView showMeta={true} />
             </header>
         </div>
     )
