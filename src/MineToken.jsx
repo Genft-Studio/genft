@@ -4,26 +4,15 @@ import {Button} from "react-bootstrap";
 import {genftParser} from "./genft-parser";
 import {useParams} from "react-router-dom";
 
-// import body from "./assets/body.png";
-// import body2 from "./assets/body-02.png";
-// import body3 from "./assets/body-03.png";
-// import eyes from "./assets/eyes.png";
-// import eyes2 from "./assets/eyes-02.png";
-// import mouth from "./assets/mouth.png";
-// import mouth2 from "./assets/mouth-02.png";
-
 import Particles from "react-tsparticles";
 
 import './MineToken.scss'
 import {SAMPLE_GENOME} from "./sampleData";
 import {ethers} from "ethers";
-import genftFactoryDetails from "./abis/GenftFactory.json";
 import genftDetails from "./abis/Genft.json";
 import _ from "lodash";
 
 const TEST_SETTINGS = SAMPLE_GENOME
-
-const TEST_ADDRESS = '0x534Eb19E729E955308e5A9c37c90d4128e0F450F'
 
 const backgroundOptions = {
     background: {
@@ -105,17 +94,15 @@ const backgroundOptions = {
 };
 
 const MineToken = () => {
-    const {collectionId} = useParams()
-    const genftFactoryAddress = "0x74AaF8415506AdefD3f267A570fd0dE7d4101eC4"  // TODO: LOCAL DEV SERVER ADDRESS - Replace this with deployed address
+    const {collectionId: tokenContractAddress} = useParams()
+    // const genftFactoryAddress = "0x74AaF8415506AdefD3f267A570fd0dE7d4101eC4"  // TODO: LOCAL DEV SERVER ADDRESS - Replace this with deployed address
     // const genftFactoryAddress = "0x544cD79d7DDbf5aF9b3b70a00db16243f477De7e"  // TODO: LOCAL DEV SERVER ADDRESS - Replace this with deployed address
     const [isMining, setIsMining] = useState(false)
     const [foundTokens, setFoundTokens] = useState([])
     const [provider, setProvider] = useState(null)
     const [signer, setSigner] = useState(null)
     const [myAddress, setMyAddress] = useState(null)
-    const [genftFactoryContract, setGenftFactoryContract] = useState(null)
     const [genftContract, setGenftContract] = useState(null)
-    const [genftAddress, setGenftAddress] = useState(null)
 
     const handleFoundToken = async token => {
         if (token && token.dna) {
@@ -147,17 +134,21 @@ const MineToken = () => {
         // console.log("abi", genftDetails.abi)
         try {
             // Setup Genft Factory contract model
-            const factoryContract = new ethers.Contract(genftFactoryAddress, genftFactoryDetails.abi, newProvider)
-            const factoryContractWithSigner = factoryContract.connect(newSigner)
-            setGenftFactoryContract(factoryContractWithSigner)
+            // const factoryContract = new ethers.Contract(genftFactoryAddress, genftFactoryDetails.abi, newProvider)
+            // const factoryContractWithSigner = factoryContract.connect(newSigner)
+            // setGenftFactoryContract(factoryContractWithSigner)
+            //
+            // let instanceAddress = await factoryContractWithSigner.instances(genftFactoryAddress)
+            // console.log("instanceAddress", instanceAddress)
 
-            let instanceAddress = await factoryContractWithSigner.instances(collectionId)
-            console.log("instanceAddress", instanceAddress)
-            setGenftAddress(instanceAddress)
+            console.log(tokenContractAddress)
 
             // Setup Genft contract model
-            const contract = new ethers.Contract(instanceAddress, genftDetails.abi, newProvider)
-            const contractWithSigner = contract.connect(newSigner)
+            const contract = new ethers.Contract(tokenContractAddress, genftDetails.abi, newProvider)
+            console.log(`contact:`, contract)
+
+            const contractWithSigner = await contract.connect(newSigner)
+            console.log(contractWithSigner)
             setGenftContract(contractWithSigner)
 
             contractWithSigner.on("TokenMinted", async (from, dna, event) => {
@@ -179,7 +170,7 @@ const MineToken = () => {
         try {
             // TODO: Set tokenUri to something meaningful (or remove it from the spec if unnecessary)
             const tokenUri = ""
-            const result = await genftContract.mint(seed, tokenUri)
+            const result = await genftContract.mint(seed, tokenUri, {value: ethers.utils.parseEther('1.0')})
             // TODO: Fix whatever is failing with a VM Exception when attempting to run genftContract.mint
         } catch (e) {
             console.log("ERROR: Minting token: ", e.toString())
