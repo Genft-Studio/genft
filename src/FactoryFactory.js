@@ -130,15 +130,14 @@ function FactoryFactory() {
 
         // Initiate transaction to Genft Factory to create a new Genft contract
         // Include IPFS cid for asset data
-        // TODO: Parameter validation
         let tokenName = "Genft Genesis"
         let tokenSymbol = "GENFT-0"
         let minimumDifficulty = 20
         let dnaBitLength = 6 * 8
         let firstPrice = "0.1"
         let priceIncrement = "0.005"
-        let baseTokenURI = ""
-        let uiConfigUri = ""
+        let baseTokenURI = ""           // TODO: Set this to something appropriate
+        let uiConfigUri = ""            // TODO: Set this to something appropriate
         let commissionPercentage = 10
 
         try {
@@ -152,7 +151,7 @@ function FactoryFactory() {
                 baseTokenURI,
                 uiConfigUri,
                 commissionPercentage,
-                // cidRoot
+                // cidRoot              // TODO: Include this IPFS CID pointing to genome data
             )
         } catch (e) {
             console.log("ERROR: Problem running get() on factory contract: ", e.toString())
