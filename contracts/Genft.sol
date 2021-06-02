@@ -21,9 +21,9 @@ contract Genft is ERC721URIStorage, ERC721Pausable, ERC721Burnable, AccessContro
     uint256 public firstPrice;
     uint256 public priceIncrement;
     string public uiConfigUri;
-    uint256 public commissionPercentage;
+    uint8 public commissionPercentage;
     string public baseTokenURI;
-    address public walletAddress;
+    address public factoryWalletAddress;
     address public artistAddress;
 
     mapping(uint256 => uint256) byDna; // dna must be unique
@@ -39,10 +39,13 @@ contract Genft is ERC721URIStorage, ERC721Pausable, ERC721Burnable, AccessContro
         uint256 _priceIncrement,
         string memory _baseTokenURI,
         string memory _uiConfigUri,
-        address _adminAddress,
-        uint256 _commissionPercentage
+        address _factoryWalletAddress,
+        uint8 _commissionPercentage,
+        address _artistAddress
     ) ERC721(_tokenName, _tokenSymbol) ERC721Pausable() ERC721Burnable() AccessControlEnumerable()
     {
+        require(commissionPercentage < 100, "commission percentage too high");
+
         difficulty1Target = 2 ** (256 - uint256(_minimumDifficultyBits)) - 1;
         genomeBitLength = _genomeBitLength;
         firstPrice = _firstPrice;
@@ -52,12 +55,13 @@ contract Genft is ERC721URIStorage, ERC721Pausable, ERC721Burnable, AccessContro
         baseTokenURI = _baseTokenURI;
 
         //set up roles
-        _setupRole(PAUSER_ROLE, _msgSender());
-        artistAddress = _msgSender();
+        _setupRole(PAUSER_ROLE, _artistAddress);
+        _setupRole(DEFAULT_ADMIN_ROLE, _factoryWalletAddress);
+        _setupRole(PAUSER_ROLE, _factoryWalletAddress);
 
-        _setupRole(DEFAULT_ADMIN_ROLE, _adminAddress);
-        walletAddress = _adminAddress;
-        _setupRole(PAUSER_ROLE, _adminAddress);
+        // setup payees
+        factoryWalletAddress = _factoryWalletAddress;
+        artistAddress = _artistAddress;
     }
 
     function _baseURI() internal view virtual override returns (string memory) {
@@ -84,14 +88,24 @@ contract Genft is ERC721URIStorage, ERC721Pausable, ERC721Burnable, AccessContro
 
         // TODO distribute the funds via a payment splitter
         // pay the factory
-        uint256 commission = price * commissionPercentage / 100;
-        payable(walletAddress).transfer(commission);
+        uint256 commission = price * uint256(commissionPercentage) / 100;
+        if (commission > 0) {
+            payable(factoryWalletAddress).transfer(commission);
+        }
 
         // pay the artist
-        payable(artistAddress).transfer(price - commission);
+        uint256 artistPayment = 0;
+        if (price > commission) {
+            artistPayment = price - commission;
+            payable(artistAddress).transfer(artistPayment);
+        }
 
         // return change
-        payable(msg.sender).transfer(msg.value - price);
+        uint256 change = 0;
+        if (msg.value > price) {
+            change = msg.value - price;
+            payable(msg.sender).transfer(change);
+        }
 
         uint256 dna = uint256(work) % 2 ** uint256(genomeBitLength);
 
@@ -99,9 +113,9 @@ contract Genft is ERC721URIStorage, ERC721Pausable, ERC721Burnable, AccessContro
         byDna[dna] = newTokenIndex;
 
         _safeMint(msg.sender, uint256(dna));
-        _setTokenURI(newTokenIndex, tokenUri_);
+        _setTokenURI(dna, tokenUri_);
 
-        emit TokenMinted(price, dna);
+        emit TokenMinted(price, uint256(dna));
     }
 
     function _burn(uint256 tokenId) internal virtual override(ERC721, ERC721URIStorage) {

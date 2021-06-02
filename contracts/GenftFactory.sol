@@ -7,8 +7,11 @@ import "./Genft.sol";
 
 contract GenftFactory is Ownable {
     Genft[] public instances;
+    // TODO store token ids so they can be checked for uniqueness
+
     event InstanceCreated(address indexed _from, address indexed _instance, uint256 indexed _instanceNumber);
-    address walletAddress;
+
+    address factoryWalletAddress;
 
     function get(
         string memory _tokenName,
@@ -19,7 +22,7 @@ contract GenftFactory is Ownable {
         uint256 _priceIncrement,
         string memory _baseTokenURI,
         string memory _uiConfigUri,
-        uint256 _commissionPercentage
+        uint8 _commissionPercentage
     ) external {
         // TODO make and pass a payment splitter (https://docs.openzeppelin.com/contracts/2.x/api/payment)
 
@@ -32,15 +35,16 @@ contract GenftFactory is Ownable {
             _priceIncrement,
             _baseTokenURI,
             _uiConfigUri,
-            walletAddress,
-            _commissionPercentage
+            factoryWalletAddress,
+            _commissionPercentage,
+            msg.sender
         );
         instances.push(instance);
         emit InstanceCreated(msg.sender, address(instance), instances.length-1);
     }
 
     function setWalletAddress(address addr) public onlyOwner {
-        walletAddress = addr;
+        factoryWalletAddress = addr;
     }
 
 }
