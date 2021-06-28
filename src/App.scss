@@ -1,8 +1,6 @@
 @import "~bootstrap";
 
 body {
-  background: #346;
-  background-image: linear-gradient(to bottom, #346, #538, #346);
 }
 
 .App {
@@ -48,41 +46,10 @@ body {
 .App-container {
   align-items: center;
   justify-content: center;
-
   margin: 0 100px 50px;
   background-color: white;
-  border: 3px solid;
   padding: 20px 50px;
 }
-
-nav {
-}
-
-nav ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #333;
-}
-
-nav li {
-  float: left;
-}
-
-nav li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
-
-/* Change the link color to #111 (black) on hover */
-nav li a:hover {
-  background-color: #111;
-}
-
 
 label.file-upload input[type=file] {
   /*display: none;*/
@@ -121,10 +88,6 @@ label.file-upload:hover{
   max-width: 50px;
   border: 1px solid #666;
   background-color: white;
-}
-#background {
-  position: fixed;
-  z-index: -99999;
 }
 
 ul.metadata {
